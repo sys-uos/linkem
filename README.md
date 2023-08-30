@@ -4,13 +4,22 @@ This Link Emulation Bridge (Link'Em) provides the service of a *reproducible* ne
 * An **trace extension** enables a packet-based emulation of packet loss and delay. 
 * A **seed extension** for the (implemented) random number generatorMersenne Twister 19937 provides reproducibility in the model-based emulation. 
 
-This reproducible network emulator Link’Em upgrades the intern linux network emulator netem. The modifications base upon the linux kernel 5.10 LTS version and are probably
-not portable to more recent kernel versions. 
+This reproducible network emulator Link’Em upgrades the intern linux network emulator netem. The branches refer to the kernel versions.
+
+![Version][version-badge]
+![LGPL][license-badge]
+![Supported OS][os-badge]
+![Supported OS][os-badge2]
+
+[license-badge]: https://badgen.net/badge/license/LGPL%20v2.0%20or%20later
+[os-badge]: https://badgen.net/badge/OS/Ubuntu%2020.04/green
+[os-badge2]: https://badgen.net/badge/OS/Ubuntu%2022.04/green
+[version-badge]: https://badgen.net/badge/version/2.0/blue
 
 **These files are suited especially for Ubuntu 20.04 LTS!**
 
 ## Getting Started
-To follow this README, you need to have Ubuntu 20.04 LTS with a linux based operating system.
+
 ### Prerequisites
 Building the kernel module requires the following libraries:
 ``` 
@@ -18,12 +27,10 @@ sudo apt-get install libelf-dev build-essential libncurses5-dev gcc make git exu
 ``` 
 
 ### Installing 
-The following setup was tested in Ubuntu 20.04 LTS.
 
 #### Installing the Linux Kernel
-IMPORTANT: Installing a new kernel might result in unwanted behavior of your system!
 
-* Create a .config file for example with:
+* Create a .config file for example (see [Kernelnewbies](https://kernelnewbies.org/) for more information):
 ```
 make menuconfig
 ```
@@ -34,9 +41,6 @@ make -j[NUMBER_OF_KERNELS]
 sudo make modules_install install
 reboot
 ```
-(see [Kernelnewbies](https://kernelnewbies.org/) for more information).
-
-
 
 #### Installing iproute2
 Iproute2 is necessary for parsing the commands of the modified netem. 
@@ -128,58 +132,11 @@ This adds a delay of 42ms with 10ms jitter, while the random number generator is
 
 ### Limitations 
 * The highest delay is limited by the size of an unsigned int.
-* The shared memory is used to pass the trace content to netem. The size of a trace is not limited, because a process in the background loads segments of the trace 
+* The shared memory is used to pass the trace content to netem. The size of a trace is not limited, because a process in the background loads segments of the trace.
 * dynamically to the next shared memory segment. There are four shared memory segments so it works like a ringbuffer. 
 * When the trace segment from one shared memory is used, netem sends a message to the background process to load the next part of the trace in the shared memory.
 * Netem uses a RB-Tree to schedule its packets, which is limited by default to 1000 elements. Increasing the limit (by the netem limit parameter) might the accuracy of the delay emulation.
 * In the ![boxplot](docs/plot.pdf) multiple Testcases with different combinations of trace and seed configurations are tested on the difference (in seconds) between the expected and the actual delay for each packet. 
-* For every Testcase 5000 packets were sent with a bitrate of approximately 1 Mbps.
-* The following values belong to the plot:
-
-DELAY TRACE:
-Median = 5.21e-05,
-25th percentile = 3.29e-05,
-75th percentile = 0.000634,
-Bottom cap = 4.77e-06,
-Top cap = 0.00153,
-Number of Fliers = 1.13e+03,
-Highest Flier =  0.186
-
-DELAY SEED:
-Median = 0.00273,
-25th percentile = 4.41e-05,
-75th percentile = 0.0195,
-Bottom cap =      0,
-Top cap = 0.0487,
-Number of Fliers =    643,
-Highest Flier =    0.2
-
-DELAY TRACE + LOSS TRACE:
-Median = 4.25e-05,
-25th percentile = 2.9e-05,
-75th percentile = 0.000408,
-Bottom cap = 3.81e-06,
-Top cap = 0.000936,
-Number of Fliers =    554,
-Highest Flier =  0.239
-
-LOSS TRACE + DELAY SEED:
-Median = 0.00025,
-25th percentile = -0.000166,
-75th percentile = 0.0133,
-Bottom cap =      0,
-Top cap = 0.0332,
-Number of Fliers =    388,
-Highest Flier =  0.253
-
-DELAY TRACE + LOSS SEED:
-Median = 4.99e-05,
-25th percentile = 2.8e-05,
-75th percentile = 0.000844,
-Bottom cap = 4.05e-06,
-Top cap = 0.00205,
-Number of Fliers =    892,
-Highest Flier =  0.218
 
 ## License
 This project is licensed under the GNU General Public License Version 2- see the LICENSE.md file for details.
