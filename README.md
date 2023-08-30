@@ -94,7 +94,7 @@ In your LAN network might be packets you do not want to schedule. Or the other w
 application (which uses a specific port or protocol). **Hence, we recommend classifying packets with filters before link’em schedules them.** This [link](https://www.tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.qdisc.filters.html) 
 provides an introduction to filters using tc. The directory 'how-to' contains two scripts to assist you in getting started with a seed-based or trace-based emulation.
 
-Using the command *sudo tc qdisc add dev root netem help* you get the usage information. To use multiple network parameters, simply concatenate the commands. For example:
+Using the command *sudo tc qdisc add dev root netem help* you get the usage information. To use multiple network parameters, concatenate the commands. For example:
 ```
 sudo tc qdisc add dev lo root netem rng mersenne-twister seed 42 delay 1ms loss trace path/to/trace.txt
 ```
@@ -116,10 +116,10 @@ A loss trace contains a sequence of 0 and 1. The entries are not separated by an
 ```
 010111101010101110101011
 ```
-The first packet will get dumped, the second packet passes through the bridge, the third packet gets dropped, etc..
+The first packet will get dumped, the second packet will pass through, the third packet will get dropped, and so on.
 
 #### Delay Trace
-A delay trace contains a sequence of integer values that are separated by a blank. Each entry resembles the delay of a (delivered) packet in millisecond (ms). It is essential to mention that following the last element, a blank (whitespace) follows. A delay trace might look like this:
+A delay trace contains a sequence of integer values that are separated by a blank. Each entry resembles the delay of a (delivered) packet in milliseconds (ms). It is essential to mention that following the last element, a blank (whitespace) follows. A delay trace might look like this:
 ```
 42 39 25 65 54 51 33 454 21 27 45 45 51 86 
 ```
@@ -131,15 +131,14 @@ sudo tc qdisc add dev lo root netem rng mersenne-twister seed 42 delay 42ms 10ms
 This adds a delay of 42ms with 10ms jitter, while the random number generator is initialized by 42.
 
 ### Limitations 
-* The highest delay is limited by the size of an unsigned int.
-* The shared memory is used to pass the trace content to netem. The size of a trace is not limited, because a process in the background loads segments of the trace.
-* dynamically to the next shared memory segment. There are four shared memory segments so it works like a ringbuffer. 
+* The size of an unsigned int limits the highest possible delay.
+* The shared memory is used to pass the trace content to netem. The trace size is unlimited because a process in the background loads segments of the trace.
+* Dynamically to the following shared memory segment. There are four shared memory segments, so it works like a ring buffer. 
 * When the trace segment from one shared memory is used, netem sends a message to the background process to load the next part of the trace in the shared memory.
-* Netem uses a RB-Tree to schedule its packets, which is limited by default to 1000 elements. Increasing the limit (by the netem limit parameter) might the accuracy of the delay emulation.
-* In the ![boxplot](docs/plot.pdf) multiple Testcases with different combinations of trace and seed configurations are tested on the difference (in seconds) between the expected and the actual delay for each packet. 
+* Netem uses an RB-Tree to schedule its packets, which is limited by default to 1000 elements. Increasing the limit (by the netem limit parameter) might increase the accuracy of the delay emulation.
 
 ## License
-This project is licensed under the GNU General Public License Version 2- see the LICENSE.md file for details.
+This project is licensed under the GNU General Public License Version 2 or later- see the LICENSE.md file for details.
 
 ## Acknowledgements
 * Bertram Schütz
