@@ -16,7 +16,11 @@ This reproducible network emulator Link’Em upgrades the intern linux network e
 [os-badge2]: https://badgen.net/badge/OS/Ubuntu%2022.04/green
 [version-badge]: https://badgen.net/badge/version/2.0/blue
 
-**These files are suited especially for Ubuntu 20.04 LTS!**
+### Literature
+Bertram Schütz, Stefanie Thieme, Nils Aschenbruck, Leonhard Brüggemann, Dominic Laniewski
+Demonstration of "Link 'em: An Open Source Link Emulation Bridge for Reproducible Networking Research"
+IEEE Conference on Local Computer Networks (LCN), Osnabrück, Germany, October 2019.
+
 
 ## Getting Started
 
